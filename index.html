@@ -3,94 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Маскот</title>
+    <title>Спорт Эксперт</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f0f0f0;
+            padding: 0;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         #chat-container {
+            width: 100%;
             max-width: 600px;
-            margin: 0 auto;
-            padding: 10px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            height: 400px;
+            height: 80vh; /* Фиксированная высота формы */
+            background-color: black;
+            border-radius: 10px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            overflow-y: scroll;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        #header {
+            background-color: #7DFF59;
+            color: black;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+        #header img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        #header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+        #header p {
+            margin: 0;
+            font-size: 14px;
+            color: black;
+        }
+        #messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto; /* Включаем внутренний скролл */
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        .user-message {
+            align-self: flex-end;
+            background-color: #7DFF59;
+            color: black;
+        }
+        .bot-message {
+            align-self: flex-start;
+            background-color: black;
+            color: white;
+            border: 1px solid #7DFF59;
         }
         #input-container {
             display: flex;
-            margin-top: 10px;
+            padding: 10px;
+            background-color: black;
         }
         #input-box {
-            width: 80%;
+            flex-grow: 1;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border: 1px solid #7DFF59;
+            border-radius: 5px;
+            font-size: 16px;
+            color: white;
+            background-color: black;
+        }
+        #input-box::placeholder {
+            color: #666;
         }
         #send-button {
-            width: 20%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #7DFF59;
+            color: black;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
         }
-        .message {
-            margin-bottom: 10px;
-        }
-        .user-message {
-            text-align: right;
-            background-color: #d1f7d6;
-            border-radius: 8px;
-            padding: 5px 10px;
-        }
-        .bot-message {
-            text-align: left;
-            background-color: #f0f0f0;
-            border-radius: 8px;
-            padding: 5px 10px;
-        }
-        .error-message {
-            text-align: left;
-            background-color: #f8d7da;
-            border-radius: 8px;
-            padding: 5px 10px;
-            color: #721c24;
+        #send-button:hover {
+            background-color: #5AC747;
         }
     </style>
 </head>
 <body>
-
-    <h1>Маскот - Профессиональный спортивный эксперт</h1>
-    <div id="chat-container"></div>
-    <div id="input-container">
-        <input type="text" id="input-box" placeholder="Введите вопрос..." />
-        <button id="send-button">Отправить</button>
+    <div id="chat-container">
+        <div id="header">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-vNVqjZ4TAiFOqYQxSmaHm5nTnivrkK.png" alt="Маскот">
+            <div>
+                <h1>Маскот</h1>
+                <p>Профессиональный спортивный эксперт</p>
+            </div>
+        </div>
+        <div id="messages"></div>
+        <div id="input-container">
+            <input type="text" id="input-box" placeholder="Задай мне любой спортивный вопрос..." />
+            <button id="send-button">Send</button>
+        </div>
     </div>
 
     <script>
-        const openaiApiKey = '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';
-        const apiUrl = 'https://api.openai.com/v1/chat/completions'; // Новый endpoint для ChatGPT
+        const openaiApiKey = 'Тут Опен АИ АПИ ключ';
+        const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
         const sendMessage = async () => {
-            const userMessage = document.getElementById('input-box').value;
+            const inputBox = document.getElementById('input-box');
+            const userMessage = inputBox.value.trim();
             if (!userMessage) return;
 
-            appendMessage('user', userMessage);
+            addMessage('user', userMessage);
+
+            // Очищаем поле ввода
+            inputBox.value = '';
 
             try {
                 const response = await axios.post(apiUrl, {
-                    model: "gpt-4o",//"gpt-3.5-turbo", // Используем gpt-3.5-turbo модель
-                    messages: [{ role: "system", content: "You are a helpful assistant." },
-                              { role: "user", content: `ты - спортивный аналитик. дай развернутый спортивный ответ на вопрос: ${userMessage}.Отвечай на вопросы только касащиеся спорта. Есил тебе задают вопрос не касающийся спорта - ответь: "Я не могу ответить на ваш вопрос, так как он не связан со спортивной темой. Отвечай кратко и сжато. Не больше пяти предложений."` }],
+                    model: "gpt-4",
+                    messages: [
+                        { role: "system", content: "You are a helpful assistant." },
+                        { role: "user", content: `ты - спортивный аналитик. дай развернутый спортивный ответ на вопрос: ${userMessage}. Отвечай на вопросы только касающиеся спорта. Если тебе задают вопрос не касающийся спорта - ответь: "Я не могу ответить на ваш вопрос, так как он не связан со спортивной темой. Отвечай кратко и сжато. Не больше пяти предложений."` }
+                    ]
                 }, {
                     headers: {
                         'Authorization': `Bearer ${openaiApiKey}`,
@@ -99,20 +154,19 @@
                 });
 
                 const botMessage = response.data.choices[0].message.content.trim();
-                appendMessage('bot', botMessage);
+                addMessage('bot', botMessage);
             } catch (error) {
                 console.error('Error fetching response:', error);
-                appendMessage('error', `ERROR: ${error.message}`);
+                addMessage('bot', `Ошибка: ${error.message}`);
             }
         };
 
-        const appendMessage = (sender, text) => {
-            const messageContainer = document.createElement('div');
-            messageContainer.classList.add('message', `${sender}-message`);
-            messageContainer.textContent = text;
-            document.getElementById('chat-container').appendChild(messageContainer);
-            document.getElementById('input-box').value = '';
-            document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
+        const addMessage = (sender, text) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            document.getElementById('messages').appendChild(messageDiv);
+            messageDiv.scrollIntoView();
         };
 
         document.getElementById('send-button').addEventListener('click', sendMessage);
@@ -120,6 +174,5 @@
             if (e.key === 'Enter') sendMessage();
         });
     </script>
-
 </body>
 </html>
